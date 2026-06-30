@@ -222,6 +222,11 @@ Workflow 的 `budget`、`pipeline`、`parallel` 天然适配"propose→judge 多
 因此涉及多 agent 分工时,默认走 Workflow 编排(参见上面"B. 多智能体编排")。
 块少、依赖简单时也可以在对话里内联串起来,但裁判仍要独立。
 
+**可运行的最小示例**:`references/example-loop.workflow.js` 是一个真实跑过的硬循环
+(propose → 独立 judge 按 schema 打分 → 反馈回填 → 达阈值或用完轮数才停)。它演示
+"循环由代码 `for` 强制、不靠模型自觉"。换任务时改 RUBRIC / SCORE_SCHEMA / THRESHOLD /
+propose 提示词即可——**它是示例不是模板,别照搬其中的 ERP 措辞**。
+
 ## 交付什么
 
 收敛后,交给用户**这四样**,别只丢一个最终提示词:

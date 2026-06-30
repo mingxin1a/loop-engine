@@ -49,11 +49,18 @@ git clone https://github.com/<you>/loopengine.git $env:USERPROFILE\.claude\skill
 ## 目录结构
 
 ```
-loopengine/
-├── SKILL.md                  # 引擎主体:维度模型 + 拆分方法 + 迭代闭环
-└── references/
-    └── instances.md          # 拆分实例参考(示例,不是模板)
+loop-engine/
+├── SKILL.md                          # 引擎主体:12 维模型 + 拆分方法 + 迭代闭环
+├── references/
+│   ├── instances.md                  # 拆分实例参考(示例,不是模板)
+│   └── example-loop.workflow.js      # 可运行的硬循环示例(真实跑过)
+└── examples/
+    └── erp-summary-design.md         # 示例产物:引擎跑出的 ERP 概要设计文档(94/100)
 ```
+
+`references/example-loop.workflow.js` 是把迭代闭环落成 Workflow **真实控制流**的最小示例:
+循环由代码 `for` 强制(不靠模型自觉),judge 是独立 agent 且 schema 强制结构化打分,
+达阈值或用完轮数才停。`examples/erp-summary-design.md` 是它一次实跑的产物。
 
 ## 用法示例
 

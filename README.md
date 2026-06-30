@@ -49,7 +49,7 @@ git clone https://github.com/<you>/loopengine.git $env:USERPROFILE\.claude\skill
 ## 目录结构
 
 ```
-loop-engine/
+loopengine/
 ├── SKILL.md                          # 引擎主体:12 维模型 + 拆分方法 + 迭代闭环
 ├── references/
 │   ├── instances.md                  # 拆分实例参考(示例,不是模板)

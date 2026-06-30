@@ -89,6 +89,15 @@ ${RUBRIC}`
 
   doc = await agent(proposePrompt, { label: `propose:r${round}`, phase: 'Loop' })
 
+  // propose 失败(终端 API 错误/被 skip → doc 为 null):本轮直接记 0,
+  // 省掉一次注定判 0 的 judge 调用,带反馈进下一轮。
+  if (!doc) {
+    trace.push({ round, total: 0, pass: false, criteria: [], top_issues: ['propose agent 未返回文档(API 中断或被跳过)'] })
+    log(`R${round}: propose 未返回 → 记 0 分,进入下一轮`)
+    lastFeedback = ['上一轮未能产出文档(API 中断或被跳过),请基于 rubric 从头产出完整文档。']
+    continue
+  }
+
   // ② judge:独立评审 agent,只看 rubric + 文档,schema 强制结构化打分。
   const judge = await agent(
     `你是严格、独立的评审。只依据下面 rubric 给这份 ERP 概要设计文档逐项打分。不替作者辩护,有疑义从严。
@@ -104,6 +113,15 @@ ${doc}
 DOC`,
     { label: `judge:r${round}`, phase: 'Loop', schema: SCORE_SCHEMA }
   )
+
+  // judge 可能为 null:终端 API 错误重试耗尽、或用户中途 skip 该 agent。
+  // 优雅降级——本轮记 0 分、带一条反馈进下一轮,而不是让 judge.total 抛 TypeError 崩掉整个循环。
+  if (!judge) {
+    trace.push({ round, total: 0, pass: false, criteria: [], top_issues: ['judge agent 未返回(API 中断或被跳过)'] })
+    log(`R${round}: judge 未返回 → 记 0 分,进入下一轮`)
+    lastFeedback = ['上一轮独立评审未能返回评分(API 中断或被跳过),请基于 rubric 自查并补全所有章节后重新产出完整文档。']
+    continue
+  }
 
   trace.push({ round, total: judge.total, pass: judge.pass, criteria: judge.criteria, top_issues: judge.feedback.slice(0, 4) })
   log(`R${round}: ${judge.total}/100  pass=${judge.pass}  待改 ${judge.feedback.length} 条`)

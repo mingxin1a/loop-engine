@@ -1,0 +1,13 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# Local skill workspaces / eval runs (not part of the skill itself)
+loopengine-workspace/
+*-workspace/
+evals/results/
